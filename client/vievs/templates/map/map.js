@@ -64,7 +64,6 @@ Template.map.events({
       function setMarkersOnMap () {
         for (var i in venues) {
           var venue = venues[i];
-          // place the a marker on the map
           markers[i] = new google.maps.Marker({
             position: new google.maps.LatLng(venue.location.lat, venue.location.lng),
             map: map
@@ -79,16 +78,21 @@ Template.map.events({
           center = bounds.getCenter();
           cornerOfScreen = bounds.getNorthEast();
 
-          var r = 3963.0;
+          var earthRad = 3963.0;
+          var radian = 57.2958;
 
-          var lat1 = center.lat() / 57.2958;
-          var lng1 = center.lng() / 57.2958;
-          var lat2 = cornerOfScreen.lat() / 57.2958;
-          var lng2 = cornerOfScreen.lng() / 57.2958;
+          var lat1 = center.lat() / radian;
+          var lng1 = center.lng() / radian;
+          var lat2 = cornerOfScreen.lat() / radian;
+          var lng2 = cornerOfScreen.lng() / radian;
 
-          var dis = r * Math.acos(Math.sin(lat1) * Math.sin(lat2) +
+          // computing of distance between center and corner of visible part map on screen
+          var radius = earthRad * Math.acos(Math.sin(lat1) * Math.sin(lat2) +
               Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1));
-          return dis;
+          console.log(radius);
+          if(radius > 10)
+            return 10;
+          return radius;
       }
 
 
