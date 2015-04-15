@@ -1,0 +1,15 @@
+<template name='layout'>
+	<head>
+		<title>
+			JSSolutions test assigment
+		</title>
+	</head>
+	<body>
+		{{>yield region='auth'}}
+		<div class='content-container'>
+			{{>yield region='queriesHistory'}}
+			{{>yield}}
+			{{>yield region='searchRes'}}
+		</div>
+	</body>
+</template>

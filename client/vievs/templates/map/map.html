@@ -1,0 +1,8 @@
+<template name='map'>
+  	<form id="search-form">
+    	<input type="text" name='searchBox' class="form-control" placeholder="Text input">
+  	</form>
+	<div class="map-container">
+		{{> googleMap name="map" options=mapOptions}}
+	</div>
+</template>
