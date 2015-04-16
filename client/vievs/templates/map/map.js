@@ -15,6 +15,7 @@ Template.map.helpers({
 });
 
 Template.map.onRendered(function() {
+  Meteor.subscribe('queries');
   Session.set('venues', null);
 });
 
@@ -25,6 +26,7 @@ Template.map.events({
       alert('Please, login!');
       return;
     }
+
 
     var user = Meteor.users.findOne({_id: Meteor.userId()});
     console.log(user.profile.name + '\n' + user._id);
