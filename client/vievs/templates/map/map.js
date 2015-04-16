@@ -27,7 +27,6 @@ Template.map.events({
       return;
     }
 
-
     var user = Meteor.users.findOne({_id: Meteor.userId()});
     console.log(user.profile.name + '\n' + user._id);
 
@@ -50,12 +49,15 @@ Template.map.events({
         var clientSecret = 'JSJOIIL5122PXX2DHD4VPIZPWUEAFVPCCYBTVCDLEUG3BLJB';
         var baseUrl = 'https://api.foursquare.com/v2/venues/search?';
         var endpoint = 'venues/search?';
-        var coords = "&ll=" + center.lat() + "," + center.lng();
+        var coords = "&ll=" + center.lat().toFixed(10) + "," + center.lng().toFixed(10);
         var radius = "&radius=" + (findRadius() * 1000).toFixed();
         var query = "&query=" + searchRequest;
         var key = '&client_id=' + clientId + '&client_secret=' + clientSecret + '&v=' + '20140626';
         var url = baseUrl + key + coords + radius + query;
 
+        console.log(coords + '\n' + radius);
+        
+        //  http-get request to forusquare
         $.get(url, function(result) {
           venues = result.response.venues;
           setMarkersOnMap();
