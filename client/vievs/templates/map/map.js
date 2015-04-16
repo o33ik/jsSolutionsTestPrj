@@ -28,7 +28,6 @@ Template.map.events({
     }
 
     var user = Meteor.users.findOne({_id: Meteor.userId()});
-    console.log(user.profile.name + '\n' + user._id);
 
     var searchRequest = e.target.searchBox.value || 'restaurant';
     e.target.searchBox.value = '';
@@ -45,28 +44,26 @@ Template.map.events({
             
         var center = map.getCenter();
 
-        var clientId = 'NBKDK5DHRTKZXLL3CXTUGSIDN0LBFSK4WX0TDHXKWXVOPQC2';
-        var clientSecret = 'JSJOIIL5122PXX2DHD4VPIZPWUEAFVPCCYBTVCDLEUG3BLJB';
-        var baseUrl = 'https://api.foursquare.com/v2/venues/search?';
-        var endpoint = 'venues/search?';
-        var coords = "&ll=" + center.lat().toFixed(10) + "," + center.lng().toFixed(10);
-        var radius = "&radius=" + (findRadius() * 1000).toFixed();
-        var query = "&query=" + searchRequest;
-        var key = '&client_id=' + clientId + '&client_secret=' + clientSecret + '&v=' + '20140626';
-        var url = baseUrl + key + coords + radius + query;
+        var reqParams = {
+          searchRequest: searchRequest,
+          radius: (findRadius() * 1000).toFixed(), 
+          coords: {
+            lat: center.lat().toFixed(10), 
+            lng:center.lng().toFixed(10)
+          }
+        };
 
-        console.log(coords + '\n' + radius);
-        
-        //  http-get request to forusquare
-        $.get(url, function(result) {
-          venues = result.response.venues;
+        Meteor.call('foursquareRequest', reqParams, function (err, result) {
+          venues = result;
+          console.log(venues);
           setMarkersOnMap();
         });
+
         Queries.insert({userName: user.profile.name, userId: user._id, lat: center.lat(), lng: center.lng(), rad: findRadius(), date: new Date()});
       }
 
       function setMarkersOnMap () {
-        for (var i in venues) {
+        for (var i = 0; i < venues.length; i++) {
           var venue = venues[i];
           markers[i] = new google.maps.Marker({
             position: new google.maps.LatLng(venue.location.lat, venue.location.lng),
